@@ -114,7 +114,7 @@ func main() {
 	)
 	params := winrm.DefaultParameters
 
-	if *auth == "NTML" {
+	if *auth == "NTLM" {
 		params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientNTLM{} }
 	}
 
