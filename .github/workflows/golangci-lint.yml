@@ -16,3 +16,8 @@ jobs:
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
+
+      - name: Go mod tidy
+        run: |
+          go mod tidy
+          git diff --exit-code go.sum
