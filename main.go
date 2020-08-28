@@ -14,7 +14,7 @@ func main() {
 
 	plugin.Name = "check_by_powershell"
 	plugin.Readme = `This Plugin executes remote commands on Windows machines through the use of WinRM.`
-	plugin.Version = "1.0.0"
+	plugin.Version = buildVersion()
 	plugin.Timeout = 10
 
 	config := BuildConfigFlags(plugin.FlagSet)
