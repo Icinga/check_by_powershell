@@ -252,7 +252,8 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int) {
 	// output the result
 	fmt.Print(stdout.String())
 
-	if log.GetLevel() <= log.DebugLevel && stderr.Len() > 0 {
+	// Info the debug output can confuse testing
+	if log.GetLevel() >= log.DebugLevel && stderr.Len() > 0 {
 		fmt.Println("stderr contained:")
 		fmt.Print(stderr.String())
 	}
