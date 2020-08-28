@@ -87,6 +87,10 @@ func BuildConfigFlags(fs *pflag.FlagSet) (config *Config) {
 func (c *Config) Validate() (err error) {
 	c.validated = false
 
+	if c.Host == "" {
+		return errors.New("host must be configured")
+	}
+
 	// Any commands?
 	if c.Command == "" && c.IcingaCommand == "" {
 		return errors.New("no command specified")
@@ -137,9 +141,11 @@ func (c *Config) Validate() (err error) {
 	// AuthType
 	auth := strings.ToLower(c.AuthType)
 	switch auth {
-	case AuthBasic:
+	case AuthBasic, AuthNTLM:
+		if c.User == "" || c.Password == "" {
+			return errors.New("user and password must be configured")
+		}
 	case AuthTLS:
-	case AuthNTLM:
 	case AuthSSH:
 		if c.SSHHost == "" || c.SSHUser == "" || c.SSHPassword == "" {
 			return fmt.Errorf("please specify host, user and port for auth type: %s", c.AuthType)
