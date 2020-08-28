@@ -47,22 +47,23 @@ type Config struct {
 func BuildConfigFlags(fs *pflag.FlagSet) (config *Config) {
 	config = &Config{}
 
-	fs.StringVarP(&config.Host, "host", "H", "127.0.0.1", "Host name, IP Address of the remote host")
+	fs.StringVarP(&config.Host, "host", "H", "127.0.0.1",
+		"Host name, IP Address of the remote host")
 	fs.IntVarP(&config.Port, "port", "p", 0, "Port number WinRM") // TODO: document default
 
 	fs.StringVarP(&config.User, "user", "U", "", "Username of the remote host")
 	fs.StringVarP(&config.Password, "password", "P", "", "Password of the user")
 
 	fs.BoolVarP(&config.Tls, "tls", "S", false, "Use TLS connection (default: false)")
-	fs.BoolVarP(&config.Insecure, "unsecure", "u", false, "Don't verify the hostname on the returned certificate")
-	_ = fs.MarkHidden("unsecure")
-	fs.BoolVarP(&config.Insecure, "insecure", "k", false, "Don't verify the hostname on the returned certificate")
+	fs.BoolVarP(&config.Insecure, "insecure", "k", false,
+		"Don't verify the hostname on the returned certificate")
 	fs.StringVar(&config.TlsCAPath, "ca", "", "CA certificate")
 	fs.StringVar(&config.TlsCertPath, "cert", "", "Client certificate")
 	fs.StringVar(&config.TlsKeyPath, "key", "", "Client Key")
 
 	fs.StringVar(&config.Command, "cmd", "", "Command to execute on the remote machine")
-	fs.StringVar(&config.IcingaCommand, "icingacmd", "", "Executes commands of Icinga PowerShell Framework (e.g. Invoke-IcingaCheckCPU)")
+	fs.StringVar(&config.IcingaCommand, "icingacmd", "",
+		"Executes commands of Icinga PowerShell Framework (e.g. Invoke-IcingaCheckCPU)")
 
 	fs.StringVar(&config.AuthType, "auth", AuthDefault, "Authentication mechanism - NTLM | SSH")
 
@@ -70,6 +71,13 @@ func BuildConfigFlags(fs *pflag.FlagSet) (config *Config) {
 	fs.StringVar(&config.SSHHost, "sshhost", "", "SSH Host (mandatory if --auth=SSH)")
 	fs.StringVar(&config.SSHUser, "sshuser", "", "SSH Username (mandatory if --auth=SSH)")
 	fs.StringVar(&config.SSHPassword, "sshpassword", "", "SSH Password (mandatory if --auth=SSH)")
+
+	// Compat flags
+	// TODO: remove?
+	fs.BoolVarP(&config.Insecure, "unsecure", "u", false,
+		"Don't verify the hostname on the returned certificate")
+
+	_ = fs.MarkHidden("unsecure")
 
 	return
 }
@@ -98,6 +106,7 @@ func (c *Config) Validate() (err error) {
 		if c.TlsCertPath == "" {
 			return errors.New("please specify certificate when tls is enabled")
 		}
+
 		c.tlsCert, err = ioutil.ReadFile(c.TlsCertPath)
 		if err != nil {
 			return fmt.Errorf("could not read certificate: %w", err)
@@ -106,6 +115,7 @@ func (c *Config) Validate() (err error) {
 		if c.TlsKeyPath == "" {
 			return errors.New("please specify certificate key when tls is enabled")
 		}
+
 		c.tlsKey, err = ioutil.ReadFile(c.TlsKeyPath)
 		if err != nil {
 			return fmt.Errorf("could not read certificate key: %w", err)
@@ -154,10 +164,10 @@ func (c *Config) BuildCommand() (cmd string) {
 		wrap = "try { Use-Icinga; exit (%s) } catch { Write-Host ('UNKNOWN: ' + $error); exit 3 }"
 		cmd = fmt.Sprintf(wrap, c.IcingaCommand)
 	} else {
-
 		wrap = "try { %s; exit $LASTEXITCODE } catch { Write-Host ('UNKNOWN: ' + $error); exit 3 }"
 		cmd = fmt.Sprintf(wrap, c.Command)
 	}
+
 	log.WithField("cmd", cmd).Debug("prepared pwsh for execution")
 
 	cmd = winrm.Powershell(cmd)
@@ -201,8 +211,9 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int) {
 		sshClient, err = ssh.Dial("tcp", c.SSHHost+":22", &ssh.ClientConfig{
 			User:            c.SSHUser,
 			Auth:            []ssh.AuthMethod{ssh.Password(c.SSHPassword)},
-			HostKeyCallback: ssh.InsecureIgnoreHostKey(), // TODO: really?
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(), //nolint:gosec // TODO: really?
 		})
+
 		if err != nil {
 			err = fmt.Errorf("could not connect via SSH: %w", err)
 			return
@@ -223,6 +234,7 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int) {
 		stdout = &bytes.Buffer{}
 		stderr = &bytes.Buffer{}
 	)
+
 	rc, err = client.Run(c.BuildCommand(), stdout, stderr)
 	if err != nil {
 		err = fmt.Errorf("execution of remote cmd failed: %w", err)
@@ -231,6 +243,7 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int) {
 
 	// output the result
 	fmt.Print(stdout.String())
+
 	if log.GetLevel() <= log.DebugLevel && stderr.Len() > 0 {
 		fmt.Println("stderr contained:")
 		fmt.Print(stderr.String())

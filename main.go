@@ -21,12 +21,12 @@ func main() {
 
 	err := config.Validate()
 	if err != nil {
-		check.Exit(3, "could not validate parameters: %w", err)
+		check.Exit(3, "could not validate parameters: %s", err)
 	}
 
 	err, rc := config.Run(time.Duration(plugin.Timeout)*time.Second)
 	if err != nil {
-		check.Exit(3, "execution failed: %w", err)
+		check.Exit(3, "execution failed: %s", err)
 	}
 
 	os.Exit(rc)
