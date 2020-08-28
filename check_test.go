@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const DefaultTimeout = 5 * time.Second
+
 func TestConfig_Validate(t *testing.T) {
 	c := &Config{}
 	assert.Error(t, c.Validate())
@@ -62,22 +64,44 @@ func TestConfig_Run_WithError(t *testing.T) {
 func TestConfig_Run_Basic(t *testing.T) {
 	c := buildEnvConfig(t, AuthBasic)
 
-	err := c.Validate()
-	assert.NoError(t, err)
+	runCheck(t, c)
+}
 
-	err, rc, output := c.Run(5 * time.Second)
-	assert.NoError(t, err)
-	assert.Equal(t, 0, rc)
-	assert.Contains(t, output, "ConsoleHost")
+func TestConfig_Run_Basic_WithTLS(t *testing.T) {
+	c := buildEnvConfig(t, AuthBasic)
+	setupTlsFromEnv(t, c)
+
+	runCheck(t, c)
 }
 
 func TestConfig_Run_NTLM(t *testing.T) {
 	c := buildEnvConfig(t, AuthNTLM)
 
+	runCheck(t, c)
+}
+
+func TestConfig_Run_NTLM_WithTls(t *testing.T) {
+	c := buildEnvConfig(t, AuthNTLM)
+	setupTlsFromEnv(t, c)
+	runCheck(t, c)
+}
+
+func TestConfig_Run_TLS(t *testing.T) {
+	c := buildEnvConfig(t, AuthTLS)
+	setupTlsFromEnv(t, c)
+
+	if c.TlsCertPath == "" {
+		t.Skip("WINRM_TLS_CERT not set")
+	}
+
+	runCheck(t, c)
+}
+
+func runCheck(t *testing.T, c *Config) {
 	err := c.Validate()
 	assert.NoError(t, err)
 
-	err, rc, output := c.Run(10 * time.Second)
+	err, rc, output := c.Run(DefaultTimeout)
 	assert.NoError(t, err)
 	assert.Equal(t, 0, rc)
 	assert.Contains(t, output, "ConsoleHost")
@@ -108,4 +132,27 @@ func buildEnvConfig(t *testing.T, auth string) *Config {
 	}
 
 	return c
+}
+
+func setupTlsFromEnv(t *testing.T, c *Config) {
+	if os.Getenv("WINRM_SKIP_TLS") != "" {
+		t.Skip("WINRM_SKIP_TLS has been set")
+	}
+
+	c.Tls = true
+	if os.Getenv("WINRM_INSECURE") != "" {
+		c.Insecure = true
+	}
+
+	if file := os.Getenv("WINRM_TLS_CA"); file != "" {
+		c.TlsCAPath = file
+	}
+
+	if file := os.Getenv("WINRM_TLS_CERT"); file != "" {
+		c.TlsCertPath = file
+	}
+
+	if file := os.Getenv("WINRM_TLS_KEY"); file != "" {
+		c.TlsKeyPath = file
+	}
 }

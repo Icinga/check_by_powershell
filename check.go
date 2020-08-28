@@ -128,13 +128,10 @@ func (c *Config) Validate() (err error) {
 		}
 	}
 
-	// TODO: correct handling for insecure?
-	if !c.Insecure {
-		if c.TlsCAPath != "" {
-			c.tlsCA, err = ioutil.ReadFile(c.TlsCAPath)
-			if err != nil {
-				return fmt.Errorf("could not read CA file: %w", err)
-			}
+	if c.TlsCAPath != "" {
+		c.tlsCA, err = ioutil.ReadFile(c.TlsCAPath)
+		if err != nil {
+			return fmt.Errorf("could not read CA file: %w", err)
 		}
 	}
 

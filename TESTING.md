@@ -39,3 +39,8 @@ Other vars have some additional behavior, that can be overridden, set or enabled
 * `WINRM_BASIC_PASSWORD` Use a different password for Basic Auth
 * `WINRM_NTLM_USER` Use a different user for NTLM
 * `WINRM_NTLM_PASSWORD` Use a different password for NTLM
+* `WINRM_SKIP_TLS` If set, don't run checks via a TLS/HTTPS connection
+* `WINRM_INSECURE` If set, disable certificate validation
+* `WINRM_TLS_CA` Path for a CA certificate to use
+* `WINRM_TLS_CERT` Path for a client certificate to use
+* `WINRM_TLS_KEY` Path for a client certificate key to use
