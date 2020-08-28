@@ -182,7 +182,7 @@ func (c *Config) BuildCommand() (cmd string) {
 	return
 }
 
-func (c *Config) Run(timeout time.Duration) (err error, rc int) {
+func (c *Config) Run(timeout time.Duration) (err error, rc int, output string) {
 	if !c.validated {
 		panic("you need to call Validate() before Run()")
 	}
@@ -249,13 +249,12 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int) {
 		return
 	}
 
-	// output the result
-	fmt.Print(stdout.String())
+	output = stdout.String()
 
 	// Info the debug output can confuse testing
 	if log.GetLevel() >= log.DebugLevel && stderr.Len() > 0 {
-		fmt.Println("stderr contained:")
-		fmt.Print(stderr.String())
+		output += fmt.Sprintln("stderr contained:")
+		output += fmt.Sprintln(stderr.String())
 	}
 
 	return

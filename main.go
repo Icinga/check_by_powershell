@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/NETWAYS/go-check"
 	"os"
 	"time"
@@ -24,10 +25,11 @@ func main() {
 		check.Exit(3, "could not validate parameters: %s", err)
 	}
 
-	err, rc := config.Run(time.Duration(plugin.Timeout)*time.Second)
+	err, rc, output := config.Run(time.Duration(plugin.Timeout) * time.Second)
 	if err != nil {
 		check.Exit(3, "execution failed: %s", err)
 	}
 
+	fmt.Print(output)
 	os.Exit(rc)
 }
