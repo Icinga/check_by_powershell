@@ -20,6 +20,7 @@ const (
 	AuthBasic   = "basic"
 	AuthNTLM    = "ntlm"
 	AuthSSH     = "ssh"
+	AuthTLS     = "tls"
 )
 
 type Config struct {
@@ -101,12 +102,7 @@ func (c *Config) Validate() (err error) {
 		}
 	}
 
-	// TODO: why client cert when not insecure??
-	if c.Tls && c.Insecure == false {
-		if c.TlsCertPath == "" {
-			return errors.New("please specify certificate when tls is enabled")
-		}
-
+	if c.TlsCertPath != "" {
 		c.tlsCert, err = ioutil.ReadFile(c.TlsCertPath)
 		if err != nil {
 			return fmt.Errorf("could not read certificate: %w", err)
@@ -121,17 +117,20 @@ func (c *Config) Validate() (err error) {
 			return fmt.Errorf("could not read certificate key: %w", err)
 		}
 
-		// Optional
+		if c.AuthType == "" {
+			c.AuthType = AuthTLS
+		} else {
+			log.Warnf("auth type is %s, but TLS certificates are supplied", c.AuthType)
+		}
+	}
+
+	// TODO: correct handling for insecure?
+	if !c.Insecure {
 		if c.TlsCAPath != "" {
 			c.tlsCA, err = ioutil.ReadFile(c.TlsCAPath)
 			if err != nil {
 				return fmt.Errorf("could not read CA file: %w", err)
 			}
-		}
-
-		// TODO: why is this needed??
-		winrm.DefaultParameters.TransportDecorator = func() winrm.Transporter {
-			return &winrm.ClientAuthRequest{}
 		}
 	}
 
@@ -139,6 +138,7 @@ func (c *Config) Validate() (err error) {
 	auth := strings.ToLower(c.AuthType)
 	switch auth {
 	case AuthBasic:
+	case AuthTLS:
 	case AuthNTLM:
 	case AuthSSH:
 		if c.SSHHost == "" || c.SSHUser == "" || c.SSHPassword == "" {
@@ -197,13 +197,13 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int) {
 
 	// prepare auth parameters
 	switch c.AuthType {
-	case AuthBasic:
-		params.TransportDecorator = func() winrm.Transporter {
-			return &winrm.ClientAuthRequest{}
-		}
 	case AuthNTLM:
 		params.TransportDecorator = func() winrm.Transporter {
 			return &winrm.ClientNTLM{}
+		}
+	case AuthTLS:
+		params.TransportDecorator = func() winrm.Transporter {
+			return &winrm.ClientAuthRequest{}
 		}
 	case AuthSSH:
 		// TODO: port configuration?
@@ -220,6 +220,8 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int) {
 		}
 
 		params.Dial = sshClient.Dial
+	default: // default is AuthBasic
+		params.TransportDecorator = nil
 	}
 
 	// prepare client
