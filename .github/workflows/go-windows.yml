@@ -1,0 +1,48 @@
+name: Go Windows
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+  pull_request: {}
+
+jobs:
+  build:
+    name: Integration Test
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Prepare WinRM on localhost
+        env:
+          TEST_USER_NAME: ci-test
+          TEST_USER_PASSWORD: ${{ secrets.WINDOWS_TEST_USER_RANDOM_PASSWORD }}  # only used inside the CI run
+        run: |
+          $pw = ConvertTo-SecureString -String $env:TEST_USER_PASSWORD -AsPlainText -Force
+          $cred = New-Object System.Management.Automation.PSCredential -ArgumentList $env:TEST_USER_NAME, $pw
+
+          New-LocalUser -Name $env:TEST_USER_NAME -Password $pw -Description "GitHub Action Test User"
+          Add-LocalGroupMember -Group Administrators -Member $env:TEST_USER_NAME
+
+          & winrm quickconfig -force
+          & winrm set winrm/config/service/Auth '@{Basic="true"}'
+          & winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+          & winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
+          & winrm enumerate winrm/config/listener
+
+          Restart-Service winrm
+
+          Test-WSMan -Computername localhost -Credential $cred -Authentication Negotiate
+
+      - name: Go Test
+        env:
+          WINRM_HOST: localhost
+          WINRM_USER: ci-test
+          WINRM_PASSWORD: ${{ secrets.WINDOWS_TEST_USER_RANDOM_PASSWORD }}  # only used inside the CI run
+          WINRM_SKIP_TLS: 1  # TODO: enable when HTTPs listener has been properly configured
+          WINRM_INSECURE: 1
+
+        run: go test -v ./...

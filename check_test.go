@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const DefaultTimeout = 5 * time.Second
+const DefaultTimeout = 15 * time.Second
 
 func TestConfig_Validate(t *testing.T) {
 	c := &Config{}
