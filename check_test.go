@@ -62,12 +62,24 @@ func TestConfig_Run_WithError(t *testing.T) {
 }
 
 func TestConfig_Run_Basic(t *testing.T) {
+	if os.Getenv("WINRM_SKIP_BASIC") != "" {
+		t.Skip("WINRM_SKIP_BASIC has been set")
+	}
+
+	if os.Getenv("WINRM_SKIP_UNENCRYPTED") != "" {
+		t.Skip("WINRM_SKIP_UNENCRYPTED has been set")
+	}
+
 	c := buildEnvConfig(t, AuthBasic)
 
 	runCheck(t, c)
 }
 
 func TestConfig_Run_Basic_WithTLS(t *testing.T) {
+	if os.Getenv("WINRM_SKIP_BASIC") != "" {
+		t.Skip("WINRM_SKIP_BASIC has been set")
+	}
+
 	c := buildEnvConfig(t, AuthBasic)
 	setupTlsFromEnv(t, c)
 
@@ -75,6 +87,10 @@ func TestConfig_Run_Basic_WithTLS(t *testing.T) {
 }
 
 func TestConfig_Run_NTLM(t *testing.T) {
+	if os.Getenv("WINRM_SKIP_UNENCRYPTED") != "" {
+		t.Skip("WINRM_SKIP_UNENCRYPTED has been set")
+	}
+
 	c := buildEnvConfig(t, AuthNTLM)
 
 	runCheck(t, c)
