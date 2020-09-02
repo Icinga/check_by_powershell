@@ -1,1 +1,5 @@
+.*.sw[opa]
+*~
+/build/
 check_by_powershell_for_*
+.env*

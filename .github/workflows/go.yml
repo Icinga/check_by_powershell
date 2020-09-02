@@ -1,0 +1,39 @@
+name: Go
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+  pull_request: {}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        go: [ '1.14', '1.15' ]
+
+    steps:
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: Go Test
+        run: make test
+
+      - name: Go Build
+        run: make build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: check_by_powershell
+          path: build
