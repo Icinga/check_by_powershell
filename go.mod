@@ -1,4 +1,4 @@
-module check_by_powershell
+module github.com/NETWAYS/check_by_winrm
 
 go 1.14
 

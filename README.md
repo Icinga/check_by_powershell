@@ -1,6 +1,6 @@
-# check_by_powershell
+# check_by_winrm
 
-check_by_powershell is a check plugin for Icinga 2 written in GO. It's build on the go-library [winrm](https://github.com/masterzen/winrm), which can execute remote commands on Windows machines through
+check_by_winrm is a check plugin for Icinga 2 written in GO. It's build on the go-library [winrm](https://github.com/masterzen/winrm), which can execute remote commands on Windows machines through
 the use of WinRM/WinRS.
 
 ## Preparing the remote Windows machine for Basic authentication
@@ -61,7 +61,7 @@ To compile for a specific platform, you have to set the GOOS and GOARCH environm
 | Windows | windows      |    amd64 |
 
 ### Example - Linux
-     GOOS=linux GOARCH=amd64 go build -o check_by_powershell main.go 
+     GOOS=linux GOARCH=amd64 go build -o check_by_winrm main.go 
 
 ## Usage
 
@@ -89,14 +89,14 @@ Arguments:
 ```
 
 ### Execute a script over http
-    ./check_by_powershell -H 192.168.172.217 -p 5985 --cmd "cscript.exe /T:30 /NoLogo C:\Windows\system32\check_time.vbs 1.de.pool.ntp.org 20 240" --user "windowsuser" --password 'secret!pw'
+    ./check_by_winrm -H 192.168.172.217 -p 5985 --cmd "cscript.exe /T:30 /NoLogo C:\Windows\system32\check_time.vbs 1.de.pool.ntp.org 20 240" --user "windowsuser" --password 'secret!pw'
 
     OK - NTP OK: Offset +0.0556797 secs|'offset'=+0.0556797s;20;240;
 
 It is necessary that the PowerShell script exits with an exitcode like *exit 2*, otherwise the plugin could exit with an unexpected exitcode.
 
 ### Execute a Icinga PowerShell Framework Commandlet over https
-    ./check_by_powerhsell  -H "example.local.de" --icingacmd "Invoke-IcingaCheckCPU" --user "windowsuser" --password '!secret!pw'  --tls --unsecure -t 30
+    ./check_by_winrm  -H "example.local.de" --icingacmd "Invoke-IcingaCheckCPU" --user "windowsuser" --password '!secret!pw'  --tls --unsecure -t 30
 
     [OK] Check package "CPU Load"
     | 'core_23_10'=2.31%;;;0;100 'core_23_3'=2.54%;;;0;100 'core_23_15'=2.12%;;;0;100 'core_23_5'=2.39%;;;0;100
