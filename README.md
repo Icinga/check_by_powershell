@@ -1,5 +1,7 @@
 # check_by_winrm
 
+<!-- NOTE: Update this description also in main.go -->
+
 Icinga check plugin to run checks and other commands directly on any Windows system using WinRM (Windows Remote Management).
 
 Main use case would be to call one of the [plugins](https://github.com/Icinga/icinga-powershell-plugins)
