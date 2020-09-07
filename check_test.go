@@ -22,7 +22,8 @@ func TestConfig_Validate(t *testing.T) {
 	c.Password = "verysecret"
 
 	assert.NoError(t, c.Validate())
-	assert.Equal(t, c.Port, Port)
+	assert.Equal(t, c.Port, TlsPort)
+	assert.False(t, c.NoTls)
 	assert.Equal(t, c.AuthType, AuthBasic)
 	assert.True(t, c.validated)
 }
@@ -51,12 +52,13 @@ func TestConfig_Run_WithError(t *testing.T) {
 		User:     "admin",
 		Password: "test",
 		Command:  "Get-Host",
+		NoTls:    true,
 	}
 
 	err := c.Validate()
 	assert.NoError(t, err)
 
-	err, _, _ = c.Run(1 * time.Microsecond)
+	err, _, _ = c.Run(1 * time.Second)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "dial tcp 192.0.2.11:")
 }
@@ -71,6 +73,7 @@ func TestConfig_Run_Basic(t *testing.T) {
 	}
 
 	c := buildEnvConfig(t, AuthBasic)
+	c.NoTls = true
 
 	runCheck(t, c)
 }
@@ -92,6 +95,7 @@ func TestConfig_Run_NTLM(t *testing.T) {
 	}
 
 	c := buildEnvConfig(t, AuthNTLM)
+	c.NoTls = true
 
 	runCheck(t, c)
 }
@@ -155,7 +159,6 @@ func setupTlsFromEnv(t *testing.T, c *Config) {
 		t.Skip("WINRM_SKIP_TLS has been set")
 	}
 
-	c.Tls = true
 	if os.Getenv("WINRM_INSECURE") != "" {
 		c.Insecure = true
 	}

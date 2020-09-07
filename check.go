@@ -28,7 +28,7 @@ type Config struct {
 	Port          int
 	User          string
 	Password      string
-	Tls           bool
+	NoTls         bool
 	Insecure      bool
 	TlsCAPath     string
 	tlsCA         []byte
@@ -55,9 +55,9 @@ func BuildConfigFlags(fs *pflag.FlagSet) (config *Config) {
 	fs.StringVarP(&config.User, "user", "U", "", "Username of the remote host")
 	fs.StringVarP(&config.Password, "password", "P", "", "Password of the user")
 
-	fs.BoolVarP(&config.Tls, "tls", "S", false, "Use TLS connection (default: false)")
 	fs.BoolVarP(&config.Insecure, "insecure", "k", false,
 		"Don't verify the hostname on the returned certificate")
+	fs.BoolVar(&config.NoTls, "no-tls", false, "Don't use a TLS connection, use the HTTP protocol")
 	fs.StringVar(&config.TlsCAPath, "ca", "", "CA certificate")
 	fs.StringVar(&config.TlsCertPath, "cert", "", "Client certificate")
 	fs.StringVar(&config.TlsKeyPath, "key", "", "Client Key")
@@ -100,9 +100,9 @@ func (c *Config) Validate() (err error) {
 
 	// Set default port if unset
 	if c.Port < 1 {
-		c.Port = Port
-		if c.Tls {
-			c.Port = TlsPort
+		c.Port = TlsPort
+		if c.NoTls {
+			c.Port = Port
 		}
 	}
 
@@ -189,7 +189,7 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int, output string) {
 	endpoint := winrm.NewEndpoint(
 		c.Host,     // Host to connect to
 		c.Port,     // Winrm port
-		c.Tls,      // Use TLS
+		!c.NoTls,   // Use TLS
 		c.Insecure, // Allow insecure connection
 		c.tlsCA,    // CA certificate
 		c.tlsCert,  // Client Certificate
