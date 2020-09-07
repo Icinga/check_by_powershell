@@ -64,31 +64,29 @@ To compile for a specific platform, you have to set the GOOS and GOARCH environm
      GOOS=linux GOARCH=amd64 go build -o check_by_powershell main.go 
 
 ## Usage
-    ./check_by_powershell -h
-    Usage of check_by_powershell
 
-    This Plugin executes remote commands on Windows machines through the use of WinRM.
-
-    Arguments:
-      -H, --host string          Host name, IP Address of the remote host (default "127.0.0.1")
-      -p, --port int             Port number WinRM (default 5985)
-          --user string          Username of the remote host
-          --password string      Password of the user
-          --tls                  Use TLS connection (default: false)
-      -u, --unsecure             Verify the hostname on the returned certificate
-          --ca string            CA certificate
-          --cert string          Client certificate
-          --key string           Client Key
-          --cmd string           Command to execute on the remote machine
-          --icingacmd string     Executes commands of Icinga PowerShell Framework (e.g. Invoke-IcingaCheckCPU)
-          --auth string          Authentication mechanism - NTLM | SSH
-          --sshhost string       SSH Host (mandatory if --auth=SSH)
-          --sshuser string       SSH Username (mandatory if --auth=SSH)
-          --sshpassword string   SSH Password (mandatory if --auth=SSH)
-      -t, --timeout int          Abort the check after n seconds (default 10)
-      -d, --debug                Enable debug mode
-      -v, --verbose              Enable verbose mode
-      -V, --version              Print version and exit
+```
+Arguments:
+  -H, --host string          Host name, IP Address of the remote host (default "127.0.0.1")
+  -p, --port int             Port number WinRM
+  -U, --user string          Username of the remote host
+  -P, --password string      Password of the user
+  -k, --insecure             Don't verify the hostname on the returned certificate
+      --no-tls               Don't use a TLS connection, use the HTTP protocol
+      --ca string            CA certificate
+      --cert string          Client certificate
+      --key string           Client Key
+      --cmd string           Command to execute on the remote machine
+      --icingacmd string     Executes commands of Icinga PowerShell Framework (e.g. Invoke-IcingaCheckCPU)
+      --auth string          Authentication mechanism - NTLM | SSH (default "basic")
+      --sshhost string       SSH Host (mandatory if --auth=SSH)
+      --sshuser string       SSH Username (mandatory if --auth=SSH)
+      --sshpassword string   SSH Password (mandatory if --auth=SSH)
+  -t, --timeout int          Abort the check after n seconds (default 10)
+  -d, --debug                Enable debug mode
+  -v, --verbose              Enable verbose mode
+  -V, --version              Print version and exit
+```
 
 ### Execute a script over http
     ./check_by_powershell -H 192.168.172.217 -p 5985 --cmd "cscript.exe /T:30 /NoLogo C:\Windows\system32\check_time.vbs 1.de.pool.ntp.org 20 240" --user "windowsuser" --password 'secret!pw'
