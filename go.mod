@@ -1,4 +1,4 @@
-module github.com/NETWAYS/check_by_winrm
+module github.com/Icinga/check_by_winrm
 
 go 1.14
 

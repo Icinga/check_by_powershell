@@ -167,7 +167,7 @@ To Brice Figureau [@masterzen](https://github.com/masterzen), who built a
 
 ## License
 
-Copyright (c) 2020 [NETWAYS GmbH](mailto:info@netways.de)
+Copyright (c) 2020 [Icinga GmbH](mailto:info@icinga.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

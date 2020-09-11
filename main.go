@@ -21,13 +21,12 @@ Supported authentication methods:
 * NTLM with local or AD accounts
 * TLS client certificate
 
-https://github.com/NETWAYS/check_by_winrm
+https://github.com/Icinga/check_by_winrm
 
 https://github.com/Icinga/icinga-powershell-framework
 https://github.com/Icinga/icinga-powershell-plugins
 
-Copyright (c) 2020 NETWAYS GmbH <info@netways.de>
-Copyright (c) 2020 Markus Frosch <markus.frosch@netways.de
+Copyright (c) 2020 Icinga GmbH <info@icinga.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
