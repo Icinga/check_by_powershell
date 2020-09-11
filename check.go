@@ -16,7 +16,7 @@ import (
 const (
 	Port        = 5985
 	TlsPort     = 5986
-	AuthDefault = AuthBasic
+	AuthDefault = AuthNTLM
 	AuthBasic   = "basic"
 	AuthNTLM    = "ntlm"
 	AuthSSH     = "ssh"
@@ -66,7 +66,7 @@ func BuildConfigFlags(fs *pflag.FlagSet) (config *Config) {
 	fs.StringVar(&config.IcingaCommand, "icingacmd", "",
 		"Executes commands of Icinga PowerShell Framework (e.g. Invoke-IcingaCheckCPU)")
 
-	fs.StringVar(&config.AuthType, "auth", AuthDefault, "Authentication mechanism - NTLM | SSH")
+	fs.StringVar(&config.AuthType, "auth", AuthDefault, "Authentication mechanism - Basic, NTLM, TLS, SSH")
 
 	// AuthSSH
 	fs.StringVar(&config.SSHHost, "sshhost", "", "SSH Host (mandatory if --auth=SSH)")
@@ -136,6 +136,10 @@ func (c *Config) Validate() (err error) {
 	}
 
 	// AuthType
+	if c.AuthType == "" {
+		c.AuthType = AuthDefault
+	}
+
 	auth := strings.ToLower(c.AuthType)
 	switch auth {
 	case AuthBasic, AuthNTLM:
@@ -147,8 +151,6 @@ func (c *Config) Validate() (err error) {
 		if c.SSHHost == "" || c.SSHUser == "" || c.SSHPassword == "" {
 			return fmt.Errorf("please specify host, user and port for auth type: %s", c.AuthType)
 		}
-	case "":
-		auth = AuthDefault
 	default:
 		return fmt.Errorf("invalid auth type specified: %s", c.AuthType)
 	}
