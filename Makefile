@@ -1,7 +1,7 @@
 GIT_COMMIT := $(shell git rev-list -1 HEAD)
 GO_BUILD := go build -v -ldflags "-X main.GitCommit=$(GIT_COMMIT)"
 
-NAME = check_by_winrm
+NAME = check_by_powershell
 
 .PHONY: all clean build test
 

@@ -1,8 +1,9 @@
-# check_by_winrm
+# check_by_powershell
 
 <!-- NOTE: Update this description also in main.go -->
 
-Icinga check plugin to run checks and other commands directly on any Windows system using WinRM (Windows Remote Management).
+Icinga check plugin to run checks and other commands directly on any Windows system using
+WinRM (Windows Remote Management) and Powershell.
 
 Main use case would be to call one of the [plugins](https://github.com/Icinga/icinga-powershell-plugins)
 from the [Icinga Powershell Framework](https://github.com/Icinga/icinga-powershell-framework). This will avoid the
@@ -50,7 +51,7 @@ Also, see the Icinga 2 examples in the [icinga2/ directory](icinga2/).
 
 Calling a PowerShell plugin from the framework is easy:
 
-    ./check_by_winrm  -H example.local.de --user 'ad\user' --password '!secret!pw' \
+    ./check_by_powershell  -H example.local.de --user 'ad\user' --password '!secret!pw' \
       --icingacmd 'Invoke-IcingaCheckCPU -Warning 80 -Critical 90'
 
     [OK] Check package "CPU Load"
@@ -63,7 +64,7 @@ Notes:
 
 Executing any other Windows program or script, could be another Icinga plugin: 
 
-    ./check_by_winrm -H 192.168.172.217 \
+    ./check_by_powershell -H 192.168.172.217 \
       --user 'windowsuser' --password 'secret!pw' \
       --cmd "cscript.exe /T:30 /NoLogo C:\Windows\system32\check_time.vbs 1.de.pool.ntp.org 20 240"
 
@@ -156,8 +157,8 @@ The plugin is written in Golang and can easily be compiled from source, see the 
 for further details.
 
 ```
-GOOS=linux GOARCH=amd64 go build -o check_by_winrm .
-GOOS=windows GOARCH=amd64 go build -o check_by_winrm.exe .
+GOOS=linux GOARCH=amd64 go build -o check_by_powershell .
+GOOS=windows GOARCH=amd64 go build -o check_by_powershell.exe .
 ```
 
 ## Acknowledgements
