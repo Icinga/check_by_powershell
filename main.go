@@ -8,7 +8,7 @@ import (
 )
 
 const readme = `Icinga check plugin to run checks and other commands directly on
-any Windows system using WinRM (Windows Remote Management)
+any Windows system using WinRM (Windows Remote Management) and Powershell
 
 Main use case would be to call one of the plugins from the Icinga Powershell Framework.
 This will avoid the requirement of installing an Icinga 2 agent on every Windows system.
@@ -21,7 +21,7 @@ Supported authentication methods:
 * NTLM with local or AD accounts
 * TLS client certificate
 
-https://github.com/Icinga/check_by_winrm
+https://github.com/Icinga/check_by_powershell
 
 https://github.com/Icinga/icinga-powershell-framework
 https://github.com/Icinga/icinga-powershell-plugins
@@ -46,7 +46,7 @@ func main() {
 
 	plugin := check.NewConfig()
 
-	plugin.Name = "check_by_winrm"
+	plugin.Name = "check_by_powershell"
 	plugin.Readme = readme
 	plugin.Version = buildVersion()
 	plugin.Timeout = 10

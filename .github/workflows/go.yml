@@ -35,5 +35,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: check_by_winrm-go${{ matrix.go }}
+          name: check_by_powershell-go${{ matrix.go }}
           path: build

@@ -1,4 +1,4 @@
-module github.com/Icinga/check_by_winrm
+module github.com/Icinga/check_by_powershell
 
 go 1.14
 
