@@ -24,7 +24,7 @@ func TestConfig_Validate(t *testing.T) {
 	assert.NoError(t, c.Validate())
 	assert.Equal(t, c.Port, TlsPort)
 	assert.False(t, c.NoTls)
-	assert.Equal(t, c.AuthType, AuthBasic)
+	assert.Equal(t, c.AuthType, AuthDefault)
 	assert.True(t, c.validated)
 }
 
