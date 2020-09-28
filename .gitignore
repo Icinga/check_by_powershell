@@ -3,3 +3,4 @@
 /build/
 check_by_*
 .env*
+.idea/*
