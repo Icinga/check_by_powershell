@@ -38,12 +38,10 @@ func TestBuildConfigFlags(t *testing.T) {
 
 func TestConfig_BuildCommand(t *testing.T) {
 	c := &Config{Command: "Get-Something"}
-	assert.Contains(t, c.BuildCommand(), "powershell.exe")
-	assert.Contains(t, c.BuildCommand(), "dAByA") // try {
+	assert.Contains(t, c.BuildCommand(), "powershell.exe -EncodedCommand")
 
 	c = &Config{IcingaCommand: "Icinga-CheckSomething"}
-	assert.Contains(t, c.BuildCommand(), "powershell.exe")
-	assert.Contains(t, c.BuildCommand(), "dAByAHkAIAB7ACAAVQBzAGUALQBJAGMAaQBuAGcAYQA7") // try { Use-Icinga;
+	assert.Contains(t, c.BuildCommand(), "powershell.exe -EncodedCommand")
 }
 
 func TestConfig_Run_WithError(t *testing.T) {
