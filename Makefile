@@ -1,5 +1,6 @@
 GIT_COMMIT := $(shell git rev-list -1 HEAD)
-GO_BUILD := go build -v -ldflags "-X main.GitCommit=$(GIT_COMMIT)"
+DATE := $(shell date --iso-8601=seconds)
+GO_BUILD := go build -v -ldflags "-X main.commit=$(GIT_COMMIT) -X main.date=$(DATE) -X main.builtBy=make"
 
 NAME = check_by_powershell
 

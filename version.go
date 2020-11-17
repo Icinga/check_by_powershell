@@ -1,14 +1,28 @@
 package main
 
-const Version = "0.2.0"
-
-var GitCommit string
+// default vars set by goreleaser
+// https://goreleaser.com/customization/build/
+var (
+	version = "0.2.0"
+	commit  string
+	date    string
+	builtBy string
+)
 
 func buildVersion() string {
-	version := Version
-	if GitCommit != "" {
-		version += " - " + GitCommit
+	s := version
+
+	if commit != "" {
+		s += " - " + commit
 	}
 
-	return version
+	if date != "" {
+		s += " (" + date + ")"
+	}
+
+	if builtBy != "" {
+		s += " (built by " + builtBy + ")"
+	}
+
+	return s
 }
