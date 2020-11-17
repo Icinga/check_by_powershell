@@ -1,0 +1,33 @@
+# See documentation at https://goreleaser.com
+before:
+  hooks:
+    - go mod download
+builds:
+  - goos:
+      - linux
+      - windows
+      - darwin
+    env:
+      - CGO_ENABLED=0
+release:
+  github:
+    owner: Icinga
+    name: check_by_powershell
+archives:
+  - format: binary
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
