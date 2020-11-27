@@ -27,13 +27,30 @@ jobs:
           New-LocalUser -Name $env:TEST_USER_NAME -Password $pw -Description "GitHub Action Test User"
           Add-LocalGroupMember -Group Administrators -Member $env:TEST_USER_NAME
 
-          & winrm quickconfig -force
+          # Already enabled with a HTTPS listener
+          #Enable-PSRemoting -SkipNetworkProfileCheck -Force;
+
+          # Enable HTTP listener for testing
+          New-Item -Path WSMan:\LocalHost\Listener -Transport HTTP -Address * -Force
+
+          Get-ChildItem WSMan:\LocalHost\Listener
+
           & winrm set winrm/config/service/Auth '@{Basic="true"}'
           & winrm set winrm/config/service '@{AllowUnencrypted="true"}'
           & winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
-          & winrm enumerate winrm/config/listener
 
-          Restart-Service winrm
+          # Read current cert
+          $https = Get-ChildItem WSMan:\Localhost\Listener | Where -Property Keys -eq "Transport=HTTP"
+          # TODO: for testing
+          Get-ChildItem ($https.PSPath + "\CertificateThumbprint")
+          $certThumbprint = (Get-ChildItem ($https.PSPath + "\CertificateThumbprint")).Value
+
+          # Store cert as CA for check
+          $cert = Get-Item "Cert:\Localmachine\My\${certThumbprint}"
+          Export-Certificate -Cert $cert -FilePath C:\cert.pem
+
+          # Should not be needed
+          #Restart-Service winrm
 
           Test-WSMan -Computername localhost -Credential $cred -Authentication Negotiate
 
@@ -42,7 +59,6 @@ jobs:
           WINRM_HOST: localhost
           WINRM_USER: ci-test
           WINRM_PASSWORD: ${{ secrets.WINDOWS_TEST_USER_RANDOM_PASSWORD }}  # only used inside the CI run
-          WINRM_SKIP_TLS: 1  # TODO: enable when HTTPs listener has been properly configured
-          WINRM_INSECURE: 1
+          WINRM_TLS_CA: 'C:\cert.pem'
 
         run: go test -v ./...
