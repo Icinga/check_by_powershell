@@ -57,12 +57,12 @@ Calling a PowerShell plugin from the framework is easy:
     [OK] Check package "CPU Load"
     | 'core_23_10'=2.31%;;;0;100 'core_23_3'=2.54%;;;0;100 'core_23_15'=2.12%;;;0;100 'core_23_5'=2.39%;;;0;100
       'core_23_1'=2.04%;;;0;100 'core_23'=1.93%;;;0;100 'core_2_15'=2.78%;;;0;100 'core_2_10'=2.89%;;;0;100 [...]
-      
+
 Notes:
 * You can use `--insecure` to skip CA trust and certificate checks - be careful!
 * You can use `--no-tls` to use a HTTP connection
 
-Executing any other Windows program or script, could be another Icinga plugin: 
+Executing any other Windows program or script, could be another Icinga plugin:
 
     ./check_by_powershell -H 192.168.172.217 \
       --user 'windowsuser' --password 'secret!pw' \
@@ -84,7 +84,7 @@ and using NTLM auth to access the systems.
 Anything you configure via cmd or powershell needs to be run from an administrative shell.
 
 We start with the minimal setup of enabling WinRM and raising the memory limit:
- 
+
 ```
 winrm quickconfig
 winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
@@ -96,7 +96,7 @@ Make sure to install the certificate in the local machine cert store. This examp
 
 WinRM HTTPS requires a local computer "Server Authentication" certificate with a CN matching the hostname, that is not
 expired, revoked, or self-signed to be installed.
- 
+
 ```powershell
 # Find the cert
 Get-ChildItem -Path cert:\LocalMachine\My -Recurse;
@@ -117,7 +117,7 @@ New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -Certificat
 New-NetFirewallRule -DisplayName "Windows Remote Management (HTTPS-In)" `
   -Name "Windows Remote Management (HTTPS-In)" -Profile Any -LocalPort 5986 -Protocol TCP;
 
-# Enable the HTTPS lisener
+# Enable the HTTPS listener
 Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value true;
 
 # Disable possible old HTTP firewall rules (names language specific)
