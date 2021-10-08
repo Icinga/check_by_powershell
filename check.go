@@ -39,9 +39,14 @@ type Config struct {
 	Command       string
 	IcingaCommand string
 	AuthType      string
+
 	SSHHost       string
 	SSHUser       string
+	SSHPort       uint
 	SSHPassword   string
+	SSHPrivateKeyFile string
+	//SSHDontVerifyHostKey bool
+
 	validated     bool
 }
 
@@ -70,8 +75,11 @@ func BuildConfigFlags(fs *pflag.FlagSet) (config *Config) {
 
 	// AuthSSH
 	fs.StringVar(&config.SSHHost, "sshhost", "", "SSH Host (mandatory if --auth=SSH)")
+	fs.UintVar(&config.SSHPort, "sshport", 22, "SSH Port(defaults to 22)")
 	fs.StringVar(&config.SSHUser, "sshuser", "", "SSH Username (mandatory if --auth=SSH)")
-	fs.StringVar(&config.SSHPassword, "sshpassword", "", "SSH Password (mandatory if --auth=SSH)")
+	fs.StringVar(&config.SSHPassword, "sshpassword", "", "SSH Password")
+	fs.StringVar(&config.SSHPrivateKeyFile, "sshprivatekeyfile", "", "SSH (user) key to use")
+	//fs.BoolVar(&config.SSHDontVerifyHostKey, "dontverifyhostkey", false, "Do not check for Host key (not recommended, defaults to false)")
 
 	// Compat flags
 	// TODO: remove?
@@ -148,7 +156,7 @@ func (c *Config) Validate() (err error) {
 		}
 	case AuthTLS:
 	case AuthSSH:
-		if c.SSHHost == "" || c.SSHUser == "" || c.SSHPassword == "" {
+		if c.SSHHost == "" || c.SSHUser == "" || (c.SSHPassword == "" || c.SSHPrivateKeyFile == "") {
 			return fmt.Errorf("please specify host, user and port for auth type: %s", c.AuthType)
 		}
 	default:
@@ -211,13 +219,24 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int, output string) {
 			return &winrm.ClientAuthRequest{}
 		}
 	case AuthSSH:
-		// TODO: port configuration?
 		var sshClient *ssh.Client
-		sshClient, err = ssh.Dial("tcp", c.SSHHost+":22", &ssh.ClientConfig{
-			User:            c.SSHUser,
-			Auth:            []ssh.AuthMethod{ssh.Password(c.SSHPassword)},
-			HostKeyCallback: ssh.InsecureIgnoreHostKey(), //nolint:gosec // TODO: really?
-		})
+		var sshMyClientConfig ssh.ClientConfig
+
+		if c.SSHPrivateKeyFile != "" {
+			signer, err := ssh.ParsePrivateKey([]byte(c.SSHPrivateKeyFile))
+			if err != nil {
+				err = fmt.Errorf("Could not parse the private key file: %w", err)
+				return err, 0, ""
+			}
+			sshMyClientConfig.Auth = []ssh.AuthMethod{ssh.PublicKeys(signer)}
+		} else {
+			sshMyClientConfig.Auth = []ssh.AuthMethod{ssh.Password(c.SSHPassword)}
+		}
+
+		sshMyClientConfig.User = c.SSHUser
+		sshMyClientConfig.HostKeyCallback = ssh.InsecureIgnoreHostKey() //nolint:gosec // TODO: really?
+
+		sshClient, err = ssh.Dial("tcp", c.SSHHost+":"+fmt.Sprint(c.SSHPort), &sshMyClientConfig)
 
 		if err != nil {
 			err = fmt.Errorf("could not connect via SSH: %w", err)
