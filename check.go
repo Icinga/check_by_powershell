@@ -156,7 +156,7 @@ func (c *Config) Validate() (err error) {
 		}
 	case AuthTLS:
 	case AuthSSH:
-		if c.SSHHost == "" || c.SSHUser == "" || (c.SSHPassword == "" || c.SSHPrivateKeyFile == "") {
+		if c.SSHHost == "" || c.SSHUser == "" || (c.SSHPassword == "" && c.SSHPrivateKeyFile == "") {
 			return fmt.Errorf("please specify host, user and port for auth type: %s", c.AuthType)
 		}
 	default:
