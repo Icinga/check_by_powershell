@@ -13,7 +13,6 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
-	golang.org/x/net v0.0.0-20201029055024-942e2f445f3c // indirect
-	golang.org/x/text v0.3.4 // indirect
+	golang.org/x/crypto v0.6.0
+	golang.org/x/net v0.7.0 // indirect
 )
