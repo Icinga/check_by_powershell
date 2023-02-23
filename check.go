@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
 	"golang.org/x/crypto/ssh"
-	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 )
@@ -107,7 +107,7 @@ func (c *Config) Validate() (err error) {
 	}
 
 	if c.TlsCertPath != "" {
-		c.tlsCert, err = ioutil.ReadFile(c.TlsCertPath)
+		c.tlsCert, err = os.ReadFile(c.TlsCertPath)
 		if err != nil {
 			return fmt.Errorf("could not read certificate: %w", err)
 		}
@@ -116,7 +116,7 @@ func (c *Config) Validate() (err error) {
 			return errors.New("please specify certificate key when tls is enabled")
 		}
 
-		c.tlsKey, err = ioutil.ReadFile(c.TlsKeyPath)
+		c.tlsKey, err = os.ReadFile(c.TlsKeyPath)
 		if err != nil {
 			return fmt.Errorf("could not read certificate key: %w", err)
 		}
@@ -129,7 +129,7 @@ func (c *Config) Validate() (err error) {
 	}
 
 	if c.TlsCAPath != "" {
-		c.tlsCA, err = ioutil.ReadFile(c.TlsCAPath)
+		c.tlsCA, err = os.ReadFile(c.TlsCAPath)
 		if err != nil {
 			return fmt.Errorf("could not read CA file: %w", err)
 		}
