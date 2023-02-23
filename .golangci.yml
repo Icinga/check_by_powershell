@@ -10,6 +10,8 @@ linters:
     - lll
     - whitespace
     - wsl
+  disable:
+    - rowserrcheck
   presets:
     - bugs
     - unused
