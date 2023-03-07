@@ -3,7 +3,7 @@ module github.com/Icinga/check_by_powershell
 go 1.19
 
 require (
-	github.com/NETWAYS/go-check v0.0.0-20201005065745-cd9dcb255493
+	github.com/NETWAYS/go-check v0.4.1
 	github.com/masterzen/winrm v0.0.0-20201006085433-4ac35cc97396
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/pflag v1.0.5
