@@ -8,13 +8,13 @@ run:
 linters:
   disable-all: false
   enable:
-    - funlen
     - dogsled
     - dupl
     - whitespace
     - wsl
     - exportloopref
   disable:
+    - funlen
     - scopelint
     - bodyclose
     - contextcheck
