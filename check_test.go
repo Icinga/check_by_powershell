@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/spf13/pflag"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/assert"
 )
 
 const DefaultTimeout = 15 * time.Second
@@ -45,8 +46,14 @@ func TestConfig_BuildCommand(t *testing.T) {
 }
 
 func TestConfig_Run_WithError(t *testing.T) {
+	host := os.Getenv("TEST_HOST")
+
+	if host == "" {
+		host = "192.0.2.11"
+	}
+
 	c := &Config{
-		Host:     "192.0.2.11",
+		Host:     host,
 		User:     "admin",
 		Password: "test",
 		Command:  "Get-Host",
@@ -58,7 +65,7 @@ func TestConfig_Run_WithError(t *testing.T) {
 
 	err, _, _ = c.Run(1 * time.Second)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "dial tcp 192.0.2.11:")
+	assert.Contains(t, err.Error(), "dial tcp "+host+":")
 }
 
 func TestConfig_Run_Basic(t *testing.T) {

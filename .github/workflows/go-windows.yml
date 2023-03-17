@@ -20,6 +20,7 @@ jobs:
         env:
           TEST_USER_NAME: ci-test
           TEST_USER_PASSWORD: foobar123.lang!  # only used inside the CI run
+          TEST_HOST: localhost
         run: |
           Write-Output "User name is: $Env:TEST_USER_NAME"
           $pw = ConvertTo-SecureString -String $env:TEST_USER_PASSWORD -AsPlainText -Force
