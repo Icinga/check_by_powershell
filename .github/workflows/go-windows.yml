@@ -21,6 +21,7 @@ jobs:
           TEST_USER_NAME: ci-test
           TEST_USER_PASSWORD: ${{ secrets.WINDOWS_TEST_USER_RANDOM_PASSWORD }}  # only used inside the CI run
         run: |
+          Write-Output "User name is: $Env:TEST_USER_NAME"
           $pw = ConvertTo-SecureString -String $env:TEST_USER_PASSWORD -AsPlainText -Force
           $cred = New-Object System.Management.Automation.PSCredential -ArgumentList $env:TEST_USER_NAME, $pw
 
