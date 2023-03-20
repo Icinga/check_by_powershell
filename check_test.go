@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -75,6 +76,8 @@ func TestConfig_Run_Basic(t *testing.T) {
 	c := buildEnvConfig(t, AuthBasic)
 	c.NoTls = true
 
+	fmt.Printf("%v\n", c)
+
 	runCheck(t, c)
 }
 
@@ -88,6 +91,8 @@ func TestConfig_Run_Basic_WithTLS(t *testing.T) {
 
 	err := c.Validate()
 	assert.NoError(t, err)
+
+	fmt.Printf("%v\n", c)
 
 	runCheck(t, c)
 }
@@ -103,6 +108,8 @@ func TestConfig_Run_NTLM(t *testing.T) {
 	err := c.Validate()
 	assert.NoError(t, err)
 
+	fmt.Printf("%v\n", c)
+
 	runCheck(t, c)
 }
 
@@ -112,6 +119,8 @@ func TestConfig_Run_NTLM_WithTls(t *testing.T) {
 
 	err := c.Validate()
 	assert.NoError(t, err)
+
+	fmt.Printf("%v\n", c)
 
 	runCheck(t, c)
 }
@@ -126,6 +135,8 @@ func TestConfig_Run_TLS(t *testing.T) {
 
 	err := c.Validate()
 	assert.NoError(t, err)
+
+	fmt.Printf("%v\n", c)
 
 	runCheck(t, c)
 }
