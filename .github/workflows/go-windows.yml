@@ -16,7 +16,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Bild the program
+      - name: Build the program
         run: go build
 
       - name: Prepare WinRM on localhost
@@ -43,9 +43,13 @@ jobs:
 
           winrm enumerate winrm/config/listener
 
+
+      - name: Restart WinRM and test it locally
+        run:
           Restart-Service winrm
 
           Test-WSMan -Computername localhost -Credential $cred -Authentication Negotiate
+          Test-WSMan -Computername "::1" -Port "5987" -UseSSL -Credential $cred -Authentication Negotiate
 
       - name: Go Test
         env:
