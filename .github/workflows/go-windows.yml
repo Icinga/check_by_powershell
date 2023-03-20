@@ -45,8 +45,15 @@ jobs:
 
 
       - name: Restart WinRM and test it locally
+        env:
+          TEST_USER_NAME: ci-test
+          TEST_USER_PASSWORD: foobar123.lang!  # only used inside the CI run
+          WINRM_TLS_PORT: 5987
         run:
           Restart-Service winrm
+
+          $pw = ConvertTo-SecureString -String $env:TEST_USER_PASSWORD -AsPlainText -Force
+          $cred = New-Object System.Management.Automation.PSCredential -ArgumentList $env:TEST_USER_NAME, $pw
 
           Test-WSMan -Computername localhost -Credential $cred -Authentication Negotiate
           Test-WSMan -Computername "::1" -Port "5987" -UseSSL -Credential $cred -Authentication Negotiate
