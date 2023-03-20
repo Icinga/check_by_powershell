@@ -32,6 +32,11 @@ jobs:
           & winrm set winrm/config/service/Auth '@{Basic="true"}'
           & winrm set winrm/config/service '@{AllowUnencrypted="true"}'
           & winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
+
+          $cert = New-SelfSignedCertificate  -TextExtension  @("2.5.29.17={text}DNS=localhost&IPAddress=127.0.0.1&IPAddress=::1") -CertStoreLocation "cert:\LocalMachine\My"
+          # & Export-Certificate -Cert $cert -FilePath C:\cert
+          & New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $cert.Thumbprint -force
+
           & winrm enumerate winrm/config/listener
 
           Restart-Service winrm
@@ -42,8 +47,7 @@ jobs:
         env:
           WINRM_HOST: localhost
           WINRM_USER: ci-test
-          WINRM_PASSWORD: ${{ secrets.WINDOWS_TEST_USER_RANDOM_PASSWORD }}  # only used inside the CI run
-          WINRM_SKIP_TLS: 1  # TODO: enable when HTTPs listener has been properly configured
+          WINRM_PASSWORD: foobar123.lang!  # only used inside the CI run
           WINRM_INSECURE: 1
 
         run: go test -v ./...
