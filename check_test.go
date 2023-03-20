@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/spf13/pflag"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/assert"
 )
 
 const DefaultTimeout = 15 * time.Second
