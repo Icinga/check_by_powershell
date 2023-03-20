@@ -29,16 +29,16 @@ jobs:
           New-LocalUser -Name $env:TEST_USER_NAME -Password $pw -Description "GitHub Action Test User"
           Add-LocalGroupMember -Group Administrators -Member $env:TEST_USER_NAME
 
-          & winrm quickconfig -force
-          & winrm set winrm/config/service/Auth '@{Basic="true"}'
-          & winrm set winrm/config/service '@{AllowUnencrypted="true"}'
-          & winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
+          winrm quickconfig -force
+          winrm set winrm/config/service/Auth '@{Basic="true"}'
+          winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+          winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
 
           $cert = New-SelfSignedCertificate  -TextExtension  @("2.5.29.17={text}DNS=localhost&IPAddress=127.0.0.1&IPAddress=::1") -CertStoreLocation "cert:\LocalMachine\My"
           # & Export-Certificate -Cert $cert -FilePath C:\cert
-          & New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address "IP:::1" -Port $env:WINRM_TLS_PORT -CertificateThumbPrint $cert.Thumbprint -force
+           New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address "IP:::1" -Port $env:WINRM_TLS_PORT -CertificateThumbPrint $cert.Thumbprint -force
 
-          & winrm enumerate winrm/config/listener
+          winrm enumerate winrm/config/listener
 
           Restart-Service winrm
 
