@@ -84,6 +84,9 @@ func TestConfig_Run_Basic_WithTLS(t *testing.T) {
 	c := buildEnvConfig(t, AuthBasic)
 	setupTlsFromEnv(t, c)
 
+	err := c.Validate()
+	assert.NoError(t, err)
+
 	runCheck(t, c)
 }
 
@@ -95,12 +98,19 @@ func TestConfig_Run_NTLM(t *testing.T) {
 	c := buildEnvConfig(t, AuthNTLM)
 	c.NoTls = true
 
+	err := c.Validate()
+	assert.NoError(t, err)
+
 	runCheck(t, c)
 }
 
 func TestConfig_Run_NTLM_WithTls(t *testing.T) {
 	c := buildEnvConfig(t, AuthNTLM)
 	setupTlsFromEnv(t, c)
+
+	err := c.Validate()
+	assert.NoError(t, err)
+
 	runCheck(t, c)
 }
 
@@ -111,6 +121,9 @@ func TestConfig_Run_TLS(t *testing.T) {
 	if c.TlsCertPath == "" {
 		t.Skip("WINRM_TLS_CERT not set")
 	}
+
+	err := c.Validate()
+	assert.NoError(t, err)
 
 	runCheck(t, c)
 }
