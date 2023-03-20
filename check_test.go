@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -185,5 +186,12 @@ func setupTlsFromEnv(t *testing.T, c *Config) {
 
 	if file := os.Getenv("WINRM_TLS_KEY"); file != "" {
 		c.TlsKeyPath = file
+	}
+
+	if file := os.Getenv("WINRM_TLS_PORT"); file != "" {
+		tmp, err := strconv.ParseInt(file, 10, 16)
+		assert.NoError(t, err)
+
+		c.Port = int(tmp)
 	}
 }

@@ -20,6 +20,7 @@ jobs:
         env:
           TEST_USER_NAME: ci-test
           TEST_USER_PASSWORD: foobar123.lang!  # only used inside the CI run
+          WINRM_TLS_PORT: 5987
         run: |
           Write-Output "User name is: $Env:TEST_USER_NAME"
           $pw = ConvertTo-SecureString -String $env:TEST_USER_PASSWORD -AsPlainText -Force
@@ -35,7 +36,7 @@ jobs:
 
           $cert = New-SelfSignedCertificate  -TextExtension  @("2.5.29.17={text}DNS=localhost&IPAddress=127.0.0.1&IPAddress=::1") -CertStoreLocation "cert:\LocalMachine\My"
           # & Export-Certificate -Cert $cert -FilePath C:\cert
-          & New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $cert.Thumbprint -force
+          & New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address "IP:127.0.0.1" -Port $env:WINRM_TLS_PORT -CertificateThumbPrint $cert.Thumbprint -force
 
           & winrm enumerate winrm/config/listener
 
@@ -49,5 +50,6 @@ jobs:
           WINRM_USER: ci-test
           WINRM_PASSWORD: foobar123.lang!  # only used inside the CI run
           WINRM_INSECURE: 1
+          WINRM_TLS_PORT: 5987
 
         run: go test -v ./...
