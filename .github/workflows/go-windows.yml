@@ -61,7 +61,9 @@ jobs:
         env:
           WINRM_HOST: ::1
           WINRM_USER: ci-test
+          WINRM_BASIC_USER: ci-test
           WINRM_PASSWORD: foobar123.lang!  # only used inside the CI run
+          WINRM_BASIC_PASSWORD: foobar123.lang!  # only used inside the CI run
           WINRM_INSECURE: 1
           WINRM_TLS_PORT: 5987
 
