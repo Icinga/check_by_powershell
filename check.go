@@ -2,15 +2,17 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
+	"os"
+	"strings"
+	"time"
+
 	"github.com/masterzen/winrm"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
 	"golang.org/x/crypto/ssh"
-	"os"
-	"strings"
-	"time"
 )
 
 const (
@@ -242,7 +244,9 @@ func (c *Config) Run(timeout time.Duration) (err error, rc int, output string) {
 		stderr = &bytes.Buffer{}
 	)
 
-	rc, err = client.Run(c.BuildCommand(), stdout, stderr)
+	ctx := context.Background()
+
+	rc, err = client.RunWithContext(ctx, c.BuildCommand(), stdout, stderr)
 	if err != nil {
 		err = fmt.Errorf("execution of remote cmd failed: %w", err)
 		return

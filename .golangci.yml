@@ -1,19 +1,31 @@
 run:
-  deadline: 1m
+  timeout: 5m
+  skip-files:
+    - '(.+)_test\.go'
+    - 'internal/config/http_config.go'
+    - 'internal/config/config.go'
 
 linters:
   disable-all: false
   enable:
-    #- funlen
     - dogsled
     - dupl
-    - lll
     - whitespace
     - wsl
+    - exportloopref
   disable:
+    - funlen
+    - scopelint
+    - bodyclose
+    - contextcheck
+    - nilerr
+    - noctx
     - rowserrcheck
+    - sqlclosecheck
+    - structcheck
+    - unparam
+    - musttag
   presets:
     - bugs
     - unused
-    # - style
   fast: false

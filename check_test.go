@@ -1,12 +1,15 @@
 package main
 
 import (
-	"github.com/spf13/pflag"
-	"github.com/stretchr/testify/assert"
+	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/assert"
 )
 
 const DefaultTimeout = 15 * time.Second
@@ -73,6 +76,8 @@ func TestConfig_Run_Basic(t *testing.T) {
 	c := buildEnvConfig(t, AuthBasic)
 	c.NoTls = true
 
+	fmt.Printf("%v\n", c)
+
 	runCheck(t, c)
 }
 
@@ -83,6 +88,11 @@ func TestConfig_Run_Basic_WithTLS(t *testing.T) {
 
 	c := buildEnvConfig(t, AuthBasic)
 	setupTlsFromEnv(t, c)
+
+	err := c.Validate()
+	assert.NoError(t, err)
+
+	fmt.Printf("%v\n", c)
 
 	runCheck(t, c)
 }
@@ -95,12 +105,23 @@ func TestConfig_Run_NTLM(t *testing.T) {
 	c := buildEnvConfig(t, AuthNTLM)
 	c.NoTls = true
 
+	err := c.Validate()
+	assert.NoError(t, err)
+
+	fmt.Printf("%v\n", c)
+
 	runCheck(t, c)
 }
 
 func TestConfig_Run_NTLM_WithTls(t *testing.T) {
 	c := buildEnvConfig(t, AuthNTLM)
 	setupTlsFromEnv(t, c)
+
+	err := c.Validate()
+	assert.NoError(t, err)
+
+	fmt.Printf("%v\n", c)
+
 	runCheck(t, c)
 }
 
@@ -111,6 +132,11 @@ func TestConfig_Run_TLS(t *testing.T) {
 	if c.TlsCertPath == "" {
 		t.Skip("WINRM_TLS_CERT not set")
 	}
+
+	err := c.Validate()
+	assert.NoError(t, err)
+
+	fmt.Printf("%v\n", c)
 
 	runCheck(t, c)
 }
@@ -171,5 +197,12 @@ func setupTlsFromEnv(t *testing.T, c *Config) {
 
 	if file := os.Getenv("WINRM_TLS_KEY"); file != "" {
 		c.TlsKeyPath = file
+	}
+
+	if file := os.Getenv("WINRM_TLS_PORT"); file != "" {
+		tmp, err := strconv.ParseInt(file, 10, 16)
+		assert.NoError(t, err)
+
+		c.Port = int(tmp)
 	}
 }
