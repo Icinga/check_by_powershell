@@ -39,7 +39,7 @@ jobs:
 
           $cert = New-SelfSignedCertificate  -TextExtension  @("2.5.29.17={text}DNS=localhost&IPAddress=127.0.0.1&IPAddress=::1") -CertStoreLocation "cert:\LocalMachine\My"
           # & Export-Certificate -Cert $cert -FilePath C:\cert
-           New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address "IP:::1" -Port $env:WINRM_TLS_PORT -CertificateThumbPrint $cert.Thumbprint -force
+          New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address "IP:::1" -Port $env:WINRM_TLS_PORT -CertificateThumbPrint $cert.Thumbprint -force
 
           winrm enumerate winrm/config/listener
 
@@ -56,7 +56,6 @@ jobs:
           $cred = New-Object System.Management.Automation.PSCredential -ArgumentList $env:TEST_USER_NAME, $pw
 
           Test-WSMan -Computername localhost -Credential $cred -Authentication Negotiate
-          Test-WSMan -Computername "::1" -Port $env:WINRM_TLS_PORT -UseSSL -Credential $cred -Authentication Negotiate
 
       - name: Go Test
         env:
