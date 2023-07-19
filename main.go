@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/NETWAYS/go-check"
 	"os"
 	"time"
+
+	"github.com/NETWAYS/go-check"
 )
 
 const readme = `Icinga check plugin to run checks and other commands directly on
@@ -56,12 +57,12 @@ func main() {
 
 	err := config.Validate()
 	if err != nil {
-		check.Exit(3, "could not validate parameters: %s", err)
+		check.ExitRaw(check.Unknown, "could not validate parameters: "+err.Error())
 	}
 
 	err, rc, output := config.Run(time.Duration(plugin.Timeout) * time.Second)
 	if err != nil {
-		check.Exit(3, "execution failed: %s", err)
+		check.ExitRaw(check.Unknown, "execution failed: "+err.Error())
 	}
 
 	fmt.Print(output)
