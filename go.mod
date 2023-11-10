@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/NETWAYS/go-check v0.6.0
-	github.com/masterzen/winrm v0.0.0-20220917170901-b07f6cb0598d
+	github.com/masterzen/winrm v0.0.0-20230926183142-a7fbe840deba
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
