@@ -1,6 +1,6 @@
 module github.com/Icinga/check_by_powershell
 
-go 1.19
+go 1.20
 
 require (
 	github.com/NETWAYS/go-check v0.6.2
