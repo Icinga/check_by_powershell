@@ -1,7 +1,8 @@
 run:
   timeout: 5m
 
-issues.exclude-files:
+issues:
+  exclude-files:
   - '(.+)_test\.go'
   - 'internal/config/http_config.go'
   - 'internal/config/config.go'
