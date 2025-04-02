@@ -60,7 +60,7 @@ func main() {
 		check.ExitRaw(check.Unknown, "could not validate parameters: "+err.Error())
 	}
 
-	err, rc, output := config.Run(time.Duration(plugin.Timeout) * time.Second)
+	rc, output, err := config.Run(time.Duration(plugin.Timeout) * time.Second)
 	if err != nil {
 		check.ExitRaw(check.Unknown, "execution failed: "+err.Error())
 	}

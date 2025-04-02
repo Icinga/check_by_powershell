@@ -59,7 +59,7 @@ func TestConfig_Run_WithError(t *testing.T) {
 	err := c.Validate()
 	assert.NoError(t, err)
 
-	err, _, _ = c.Run(1 * time.Second)
+	_, _, err = c.Run(1 * time.Second)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "dial tcp 192.0.2.11:")
 }
@@ -145,7 +145,7 @@ func runCheck(t *testing.T, c *Config) {
 	err := c.Validate()
 	assert.NoError(t, err)
 
-	err, rc, output := c.Run(DefaultTimeout)
+	rc, output, err := c.Run(DefaultTimeout)
 	assert.NoError(t, err)
 	assert.Equal(t, 0, rc)
 	assert.Contains(t, output, "ConsoleHost")

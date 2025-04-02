@@ -183,7 +183,7 @@ func (c *Config) BuildCommand() (cmd string) {
 	return
 }
 
-func (c *Config) Run(timeout time.Duration) (err error, rc int, output string) {
+func (c *Config) Run(timeout time.Duration) (rc int, output string, err error) {
 	if !c.validated {
 		panic("you need to call Validate() before Run()")
 	}
