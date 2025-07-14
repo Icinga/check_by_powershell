@@ -3,7 +3,7 @@ package main
 // default vars set by goreleaser
 // https://goreleaser.com/customization/build/
 var (
-	version = "0.3.0"
+	version = "0.4.0"
 	commit  string
 	date    string
 	builtBy string
