@@ -9,7 +9,7 @@ require (
 	github.com/masterzen/winrm v0.0.0-20240702205601-3fad6e106085
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/pflag v1.0.7
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.41.0
 )
 
