@@ -1,5 +1,7 @@
 .*.sw[opa]
 *~
+coverage.html
+coverage.out
 /build/
 /dist/
 check_by_*

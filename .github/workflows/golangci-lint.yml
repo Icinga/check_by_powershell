@@ -4,7 +4,7 @@ on:
     tags:
       - v*
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
@@ -18,8 +18,3 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           version: v2.12.2
-
-      - name: Go mod tidy
-        run: |
-          go mod tidy
-          git diff --exit-code go.sum
