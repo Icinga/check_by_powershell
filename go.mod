@@ -3,7 +3,7 @@ module github.com/NETWAYS/check_by_powershell
 go 1.25.0
 
 require (
-	github.com/NETWAYS/go-check v0.6.4
+	github.com/NETWAYS/go-check v1.0.0
 	github.com/masterzen/winrm v0.0.0-20260407182533-5570be7f80cf
 	github.com/spf13/pflag v1.0.10
 	golang.org/x/crypto v0.53.0
