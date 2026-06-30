@@ -9,7 +9,6 @@ import (
 	"github.com/NETWAYS/go-check"
 )
 
-// nolint: gochecknoglobals
 var (
 	// These get filled at build time with the proper vaules.
 	version = "development"
@@ -63,12 +62,12 @@ func main() {
 
 	err := config.Validate()
 	if err != nil {
-		check.ExitRaw(check.Unknown, "could not validate parameters: "+err.Error())
+		check.Exit(check.Unknown, "could not validate parameters:", err.Error())
 	}
 
 	rc, output, err := config.Run(time.Duration(plugin.Timeout) * time.Second)
 	if err != nil {
-		check.ExitRaw(check.Unknown, "execution failed: "+err.Error())
+		check.Exit(check.Unknown, "execution failed:", err.Error())
 	}
 
 	fmt.Print(output)
